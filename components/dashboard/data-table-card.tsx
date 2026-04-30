@@ -1,10 +1,11 @@
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Column<T> = {
   key: keyof T;
   label: string;
-  render?: (value: T[keyof T], row: T) => React.ReactNode;
+  render?: (value: T[keyof T], row: T) => ReactNode;
 };
 
 type DataTableCardProps<T extends { id: string }> = {
@@ -30,7 +31,7 @@ export function DataTableCard<T extends { id: string }>({
       </CardHeader>
       <CardContent className="overflow-x-auto">
         {rows.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
             {emptyText}
           </div>
         ) : (
@@ -67,6 +68,6 @@ export function DataTableCard<T extends { id: string }>({
   );
 }
 
-export function StatusBadge({ children }: { children: React.ReactNode }) {
-  return <Badge className="bg-primary/10 text-primary">{children}</Badge>;
+export function StatusBadge({ children }: { children: ReactNode }) {
+  return <Badge className="border border-primary/20 bg-primary/10 text-primary">{children}</Badge>;
 }
