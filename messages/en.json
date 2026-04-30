@@ -1,0 +1,117 @@
+{
+  "brand": {
+    "title": "Smart Sales Dashboard",
+    "subtitle": "Hebrew-first CRM with a voice sales agent foundation"
+  },
+  "nav": {
+    "dashboard": "Overview",
+    "agent": "AI Agent",
+    "leads": "Leads",
+    "calls": "Calls",
+    "calendar": "Calendar",
+    "products": "Products",
+    "settings": "Settings"
+  },
+  "sidebar": {
+    "quickStatusTitle": "Quick status",
+    "quickStatusBody": "MVP is live: AI sales agent flow with server-side Vapi wiring."
+  },
+  "topbar": {
+    "searchPlaceholder": "Search leads, calls or tasks",
+    "localeToggle": "Hebrew",
+    "notifications": "Alerts",
+    "themeToggleLabel": "Theme mode: {theme}",
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "userName": "Or Elkalai",
+    "userRole": "Business owner"
+  },
+  "dashboard": {
+    "title": "Good morning, here is your business snapshot",
+    "description": "A first RTL dashboard for LeadPilot AI with clean mock data for the next phases.",
+    "primaryAction": "New lead",
+    "leadOverviewTitle": "Leads in focus",
+    "leadOverviewDescription": "Customers that need attention in the current sales cycle.",
+    "activityTitle": "Recent calls and activity",
+    "activityDescription": "A quick look at AI call progress and follow-ups.",
+    "calendarSnapshotTitle": "Upcoming slots",
+    "activeLeadsBadge": "{count} active",
+    "aiLiveBadge": "AI live"
+  },
+  "leadsPage": {
+    "title": "Lead management",
+    "description": "A basic Hebrew-first leads table with statuses, ready for CRUD wiring later.",
+    "primaryAction": "Add lead",
+    "tableTitle": "All leads",
+    "tableDescription": "Initial mock view before database integration.",
+    "empty": "No leads to display yet.",
+    "columns": {
+      "name": "Full name",
+      "phone": "Phone",
+      "source": "Source",
+      "status": "Status",
+      "value": "Potential value"
+    }
+  },
+  "callsPage": {
+    "title": "AI calls log",
+    "description": "An initial monitoring screen for outbound AI calls, with placeholders only.",
+    "primaryAction": "Export activity",
+    "tableTitle": "Recent calls",
+    "tableDescription": "Status, summary and transcript will appear here later.",
+    "empty": "No calls to display yet.",
+    "columns": {
+      "leadName": "Lead",
+      "status": "Status",
+      "summary": "Summary",
+      "createdAt": "Created at"
+    }
+  },
+  "agentPage": {
+    "title": "AI sales agent with Vapi",
+    "description": "Narrow MVP: enter a lead, trigger a real outbound call, and receive status/summary through a webhook.",
+    "configured": "Vapi configured",
+    "missingConfig": "Missing ENV",
+    "setupTitle": "Vapi connection",
+    "setupDescription": "All keys stay server-side. No service role or secrets are exposed to the client.",
+    "webhookTitle": "Webhook for status and summary",
+    "historyTitle": "Started calls",
+    "historyDescription": "Stored temporarily in server memory until Supabase is connected.",
+    "empty": "No Vapi call has been started yet.",
+    "transcript": "Transcript"
+  },
+  "calendarPage": {
+    "title": "Installations and deliveries calendar",
+    "description": "A scheduling foundation for sales and operations teams.",
+    "primaryAction": "New slot",
+    "agendaTitle": "Upcoming slots",
+    "agendaDescription": "A mobile-first list view for the MVP.",
+    "summaryTitle": "Capacity snapshot",
+    "summaryDescription": "Quick view of availability and reservations.",
+    "summaryAvailable": "This week's availability",
+    "summaryReserved": "Reserved work"
+  },
+  "productsPage": {
+    "title": "Products catalog",
+    "description": "Clean product cards ready for image_url, inventory and WhatsApp actions later.",
+    "primaryAction": "New product",
+    "cardPrimary": "Copy link",
+    "cardSecondary": "Send to lead",
+    "stockLabel": "Inventory count: {count}"
+  },
+  "settingsPage": {
+    "title": "System settings",
+    "description": "A basic area for business settings and future automation setup.",
+    "primaryAction": "Edit business profile",
+    "businessTitle": "Business details",
+    "businessDescription": "Mock data for display only at this stage.",
+    "automationTitle": "Automation prep",
+    "automationDescription": "Key setup notes before real providers are connected.",
+    "automationItemOne": "Voice agent: provider abstraction will arrive in later phases.",
+    "automationItemTwo": "WhatsApp: we keep an abstraction before wiring Meta.",
+    "automationItemThree": "Payments: secure payment links will land with a separate mock provider."
+  }
+}

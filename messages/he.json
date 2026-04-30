@@ -1,0 +1,117 @@
+{
+  "brand": {
+    "title": "דשבורד מכירות חכם",
+    "subtitle": "CRM בעברית עם תשתית לסוכן מכירות קולי"
+  },
+  "nav": {
+    "dashboard": "סקירה",
+    "agent": "סוכן AI",
+    "leads": "לידים",
+    "calls": "שיחות",
+    "calendar": "יומן",
+    "products": "מוצרים",
+    "settings": "הגדרות"
+  },
+  "sidebar": {
+    "quickStatusTitle": "מצב מהיר",
+    "quickStatusBody": "MVP פעיל: סוכן מכירות AI עם חיבור Vapi בצד שרת."
+  },
+  "topbar": {
+    "searchPlaceholder": "חיפוש לידים, שיחות או משימות",
+    "localeToggle": "עברית",
+    "notifications": "התראות",
+    "themeToggleLabel": "מצב ערכת נושא: {theme}",
+    "theme": {
+      "system": "מערכת",
+      "light": "בהיר",
+      "dark": "כהה"
+    },
+    "userName": "אור אלקלעי",
+    "userRole": "בעל העסק"
+  },
+  "dashboard": {
+    "title": "בוקר טוב, הנה תמונת המצב של העסק",
+    "description": "לוח שליטה RTL ראשון למערכת LeadPilot AI עם נתוני mock נקיים להמשך פיתוח.",
+    "primaryAction": "ליד חדש",
+    "leadOverviewTitle": "לידים בפוקוס",
+    "leadOverviewDescription": "לקוחות שדורשים תשומת לב בשלב המכירה הנוכחי.",
+    "activityTitle": "שיחות ופעילות אחרונה",
+    "activityDescription": "סקירה מהירה של שיחות AI ועדכוני המשך.",
+    "calendarSnapshotTitle": "סלוטים קרובים",
+    "activeLeadsBadge": "{count} פעילים",
+    "aiLiveBadge": "AI פעיל"
+  },
+  "leadsPage": {
+    "title": "ניהול לידים",
+    "description": "טבלת לידים בסיסית בעברית עם סטטוסים ומבנה מוכן לחיבור CRUD בהמשך.",
+    "primaryAction": "הוסף ליד",
+    "tableTitle": "כל הלידים",
+    "tableDescription": "תצוגת mock ראשונית לפני חיבור למסד הנתונים.",
+    "empty": "עדיין אין לידים להצגה.",
+    "columns": {
+      "name": "שם מלא",
+      "phone": "טלפון",
+      "source": "מקור",
+      "status": "סטטוס",
+      "value": "שווי פוטנציאלי"
+    }
+  },
+  "callsPage": {
+    "title": "יומן שיחות AI",
+    "description": "מסך ניטור ראשוני לשיחות outbound של הסוכן, עם placeholders בלבד.",
+    "primaryAction": "ייצוא פעילות",
+    "tableTitle": "שיחות אחרונות",
+    "tableDescription": "כאן יוצגו בהמשך סטטוס, סיכום ותמלול.",
+    "empty": "עדיין אין שיחות להצגה.",
+    "columns": {
+      "leadName": "ליד",
+      "status": "סטטוס",
+      "summary": "סיכום",
+      "createdAt": "זמן יצירה"
+    }
+  },
+  "agentPage": {
+    "title": "סוכן מכירות AI עם Vapi",
+    "description": "MVP צר: הזן ליד, הפעל שיחת outbound אמיתית, וקבל סטטוס/סיכום דרך webhook.",
+    "configured": "Vapi מוגדר",
+    "missingConfig": "חסר ENV",
+    "setupTitle": "חיבור Vapi",
+    "setupDescription": "כל המפתחות נשמרים בשרת בלבד. בלי Service Role ובלי סודות בצד לקוח.",
+    "webhookTitle": "Webhook לקבלת סטטוס וסיכום",
+    "historyTitle": "שיחות שהופעלו",
+    "historyDescription": "נשמר זמנית בזיכרון השרת עד שנחבר Supabase.",
+    "empty": "עדיין לא הופעלה שיחת Vapi.",
+    "transcript": "תמלול"
+  },
+  "calendarPage": {
+    "title": "יומן התקנות ואספקות",
+    "description": "תשתית לתיאום סלוטים עם תצוגה ברורה לצוות המכירות והתפעול.",
+    "primaryAction": "סלוט חדש",
+    "agendaTitle": "סלוטים קרובים",
+    "agendaDescription": "תצוגת רשימה mobile-first לשלב ה־MVP.",
+    "summaryTitle": "תמונת עומס",
+    "summaryDescription": "סיכום מהיר של זמינות ותפוסה.",
+    "summaryAvailable": "זמינות השבוע",
+    "summaryReserved": "משימות משוריינות"
+  },
+  "productsPage": {
+    "title": "קטלוג מוצרים",
+    "description": "כרטיסי מוצר נקיים שנוכל לחבר בהמשך ל־image_url, מלאי ופעולות WhatsApp.",
+    "primaryAction": "מוצר חדש",
+    "cardPrimary": "העתק קישור",
+    "cardSecondary": "שלח ללקוח",
+    "stockLabel": "כמות במלאי: {count}"
+  },
+  "settingsPage": {
+    "title": "הגדרות מערכת",
+    "description": "אזור בסיסי להגדרות העסק ותצורת האוטומציות העתידית.",
+    "primaryAction": "ערוך פרופיל עסק",
+    "businessTitle": "פרטי העסק",
+    "businessDescription": "נתוני mock לתצוגה בלבד בשלב זה.",
+    "automationTitle": "הכנות לאוטומציה",
+    "automationDescription": "נקודות מפתח לקראת שילוב providers אמיתיים.",
+    "automationItemOne": "סוכן קולי: שכבת provider תתווסף בשלבים הבאים.",
+    "automationItemTwo": "WhatsApp: נשמור על abstraction לפני חיבור Meta.",
+    "automationItemThree": "Payments: קישורי תשלום ייכנסו עם mock provider נפרד."
+  }
+}

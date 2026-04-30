@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -11,7 +12,7 @@ export default async function LocaleLayout({
   children,
   params
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
@@ -24,10 +25,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir={locale === "he" ? "rtl" : "ltr"}>
-      <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
-      </body>
-    </html>
+    <div lang={locale} dir={locale === "he" ? "rtl" : "ltr"}>
+      <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+    </div>
   );
 }
