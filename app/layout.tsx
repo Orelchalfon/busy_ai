@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
+import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,7 +33,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full">
-        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

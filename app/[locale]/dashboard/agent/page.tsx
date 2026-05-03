@@ -1,10 +1,15 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/dashboard/page-header";
-import { VapiSalesAgentPanel } from "@/components/dashboard/vapi-sales-agent-panel";
+import { ElevenLabsSalesAgentPanel } from "@/components/dashboard/elevenlabs-sales-agent-panel";
 import { listSalesCalls } from "@/server/calls/store";
-import { getVapiConfigStatus } from "@/server/vapi/client";
+import {
+  getElevenLabsAgentId,
+  getElevenLabsConfigStatus,
+  getElevenLabsPhoneConfig
+} from "@/server/elevenlabs/client";
 
 const statusLabels: Record<string, string> = {
   queued: "בתור",
@@ -15,14 +20,14 @@ const statusLabels: Record<string, string> = {
 };
 
 export default async function AgentPage() {
+  await connection();
+
   const t = await getTranslations("agentPage");
-  const calls = listSalesCalls();
-  const config = getVapiConfigStatus();
-  const isConfigured =
-    config.hasApiKey &&
-    config.hasAssistantId &&
-    config.hasPhoneNumberId &&
-    config.hasAppBaseUrl;
+  const calls = await listSalesCalls();
+  const config = getElevenLabsConfigStatus();
+  const isConfigured = config.hasApiKey;
+  const agentId = getElevenLabsAgentId();
+  const phoneConfig = getElevenLabsPhoneConfig();
 
   return (
     <div className="space-y-5">
@@ -37,7 +42,7 @@ export default async function AgentPage() {
       />
 
       <section className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
-        <VapiSalesAgentPanel />
+        <ElevenLabsSalesAgentPanel />
 
         <Card>
           <CardHeader>
@@ -45,13 +50,34 @@ export default async function AgentPage() {
             <CardDescription>{t("setupDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>VAPI_API_KEY: {config.hasApiKey ? "OK" : "חסר"}</p>
-            <p>VAPI_ASSISTANT_ID: {config.hasAssistantId ? "OK" : "חסר"}</p>
-            <p>VAPI_PHONE_NUMBER_ID: {config.hasPhoneNumberId ? "OK" : "חסר"}</p>
-            <p>APP_BASE_URL: {config.hasAppBaseUrl ? "OK" : "חסר"}</p>
+            <p>ELEVENLABS_API_KEY: {config.hasApiKey ? "OK" : t("missingValue")}</p>
+            <p>ELEVENLABS_PHONE_NUMBER_ID: {config.hasPhoneNumberId ? "OK" : t("missingValue")}</p>
             <div className="rounded-lg border border-border/70 bg-background/80 p-4">
-              <p className="font-medium text-foreground">{t("webhookTitle")}</p>
-              <p className="mt-2 break-all">/api/webhooks/vapi</p>
+              <p className="font-medium text-foreground">{t("agentIdTitle")}</p>
+              <p className="mt-2 break-all" dir="ltr">
+                {agentId}
+              </p>
+            </div>
+            <div className="rounded-lg border border-border/70 bg-background/80 p-4">
+              <p className="font-medium text-foreground">{t("phoneTitle")}</p>
+              <p className="mt-2 break-all" dir="ltr">
+                {phoneConfig.phoneNumber}
+              </p>
+              <p className="mt-1 break-all" dir="ltr">
+                {phoneConfig.phoneNumberId}
+              </p>
+            </div>
+            <div className="rounded-lg border border-border/70 bg-background/80 p-4">
+              <p className="font-medium text-foreground">{t("tokenRouteTitle")}</p>
+              <p className="mt-2 break-all" dir="ltr">
+                /api/elevenlabs/conversation-token
+              </p>
+            </div>
+            <div className="rounded-lg border border-border/70 bg-background/80 p-4">
+              <p className="font-medium text-foreground">{t("outboundRouteTitle")}</p>
+              <p className="mt-2 break-all" dir="ltr">
+                /api/elevenlabs/outbound-call
+              </p>
             </div>
           </CardContent>
         </Card>

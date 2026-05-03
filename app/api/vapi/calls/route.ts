@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
-  const call = createQueuedSalesCall(parsed);
+  const call = await createQueuedSalesCall(parsed);
 
   try {
     const result = await startVapiSalesCall({
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       localCallId: call.id
     });
 
-    const updated = updateSalesCall(call.id, {
+    const updated = await updateSalesCall(call.id, {
       providerCallId: result.providerCallId,
       status: "queued"
     });
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown Vapi error";
-    const updated = updateSalesCall(call.id, {
+    const updated = await updateSalesCall(call.id, {
       status: "failed",
       summary: message
     });

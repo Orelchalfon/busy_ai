@@ -1,10 +1,15 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getBusinessSettings } from "@/server/db/data";
 
 export default async function SettingsPage() {
+  await connection();
+
   const t = await getTranslations("settingsPage");
+  const settings = await getBusinessSettings();
 
   return (
     <div className="space-y-5">
@@ -21,10 +26,10 @@ export default async function SettingsPage() {
             <CardDescription>{t("businessDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>LeadPilot Furniture</p>
-            <p>תעשייה: ריהוט והתקנות</p>
-            <p>טלפון: 03-5551234</p>
-            <p>WhatsApp: 050-1234567</p>
+            <p>{settings.business.name}</p>
+            <p>תעשייה: {settings.business.industry}</p>
+            <p>טלפון: {settings.business.phone}</p>
+            <p>WhatsApp: {settings.business.whatsapp}</p>
           </CardContent>
         </Card>
 
@@ -34,9 +39,9 @@ export default async function SettingsPage() {
             <CardDescription>{t("automationDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>{t("automationItemOne")}</p>
-            <p>{t("automationItemTwo")}</p>
-            <p>{t("automationItemThree")}</p>
+            {settings.automationItems.map((item) => (
+              <p key={item}>{item}</p>
+            ))}
           </CardContent>
         </Card>
       </div>

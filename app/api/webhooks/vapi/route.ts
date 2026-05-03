@@ -43,9 +43,9 @@ export async function POST(request: Request) {
     const status = toSalesCallStatus(message.status);
 
     if (status && localCallId) {
-      updateSalesCall(localCallId, { status, providerCallId });
+      await updateSalesCall(localCallId, { status, providerCallId });
     } else if (status && providerCallId) {
-      updateSalesCallByProviderId(providerCallId, { status });
+      await updateSalesCallByProviderId(providerCallId, { status });
     }
 
     return NextResponse.json({ ok: true });
@@ -69,9 +69,9 @@ export async function POST(request: Request) {
     };
 
     if (localCallId) {
-      updateSalesCall(localCallId, patch);
+      await updateSalesCall(localCallId, patch);
     } else if (providerCallId) {
-      updateSalesCallByProviderId(providerCallId, patch);
+      await updateSalesCallByProviderId(providerCallId, patch);
     }
 
     return NextResponse.json({ ok: true });

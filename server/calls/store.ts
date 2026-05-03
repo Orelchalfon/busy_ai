@@ -1,5 +1,8 @@
 import "server-only";
 
+import { DEFAULT_BUSINESS_ID, getSupabaseServerClient } from "@/server/db/client";
+import type { Database } from "@/server/db/types";
+
 export type SalesCallStatus =
   | "queued"
   | "ringing"
@@ -22,65 +25,122 @@ export type SalesCallRecord = {
   updatedAt: string;
 };
 
-type Store = {
-  calls: SalesCallRecord[];
-};
+type SalesCallRow = Database["public"]["Tables"]["sales_calls"]["Row"];
+type SalesCallUpdate = Database["public"]["Tables"]["sales_calls"]["Update"];
 
-const globalStore = globalThis as typeof globalThis & {
-  leadPilotCallsStore?: Store;
-};
-
-const store = globalStore.leadPilotCallsStore ?? { calls: [] };
-globalStore.leadPilotCallsStore = store;
-
-export function listSalesCalls() {
-  return [...store.calls].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+function mapSalesCall(row: SalesCallRow): SalesCallRecord {
+  return {
+    id: row.id,
+    providerCallId: row.provider_call_id ?? undefined,
+    leadName: row.lead_name,
+    phone: row.phone,
+    interest: row.interest,
+    status: row.status as SalesCallStatus,
+    summary: row.summary ?? undefined,
+    transcript: row.transcript ?? undefined,
+    recordingUrl: row.recording_url ?? undefined,
+    endedReason: row.ended_reason ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
 }
 
-export function createQueuedSalesCall(input: {
+function mapPatch(patch: Partial<Omit<SalesCallRecord, "id" | "createdAt">>): SalesCallUpdate {
+  return {
+    provider_call_id: patch.providerCallId,
+    lead_name: patch.leadName,
+    phone: patch.phone,
+    interest: patch.interest,
+    status: patch.status,
+    summary: patch.summary,
+    transcript: patch.transcript,
+    recording_url: patch.recordingUrl,
+    ended_reason: patch.endedReason
+  };
+}
+
+function handleError(context: string, error: { message: string }) {
+  throw new Error(`${context}: ${error.message}`);
+}
+
+export async function listSalesCalls(businessId = DEFAULT_BUSINESS_ID) {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("sales_calls")
+    .select("*")
+    .eq("business_id", businessId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    handleError("Failed to list sales calls", error);
+  }
+
+  return (data ?? []).map(mapSalesCall);
+}
+
+export async function createQueuedSalesCall(input: {
   leadName: string;
   phone: string;
   interest: string;
 }) {
-  const now = new Date().toISOString();
-  const record: SalesCallRecord = {
-    id: crypto.randomUUID(),
-    leadName: input.leadName,
-    phone: input.phone,
-    interest: input.interest,
-    status: "queued",
-    createdAt: now,
-    updatedAt: now
-  };
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("sales_calls")
+    .insert({
+      business_id: DEFAULT_BUSINESS_ID,
+      lead_name: input.leadName,
+      phone: input.phone,
+      interest: input.interest,
+      status: "queued"
+    })
+    .select("*")
+    .single();
 
-  store.calls.unshift(record);
-  return record;
+  if (error) {
+    handleError("Failed to create queued sales call", error);
+  }
+
+  if (!data) {
+    throw new Error("Failed to create queued sales call: no call row returned.");
+  }
+
+  return mapSalesCall(data);
 }
 
-export function updateSalesCall(
+export async function updateSalesCall(
   id: string,
   patch: Partial<Omit<SalesCallRecord, "id" | "createdAt">>
 ) {
-  const record = store.calls.find((call) => call.id === id);
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("sales_calls")
+    .update(mapPatch(patch))
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
 
-  if (!record) {
-    return null;
+  if (error) {
+    handleError("Failed to update sales call", error);
   }
 
-  Object.assign(record, patch, { updatedAt: new Date().toISOString() });
-  return record;
+  return data ? mapSalesCall(data) : null;
 }
 
-export function updateSalesCallByProviderId(
+export async function updateSalesCallByProviderId(
   providerCallId: string,
   patch: Partial<Omit<SalesCallRecord, "id" | "createdAt">>
 ) {
-  const record = store.calls.find((call) => call.providerCallId === providerCallId);
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("sales_calls")
+    .update(mapPatch(patch))
+    .eq("provider_call_id", providerCallId)
+    .select("*")
+    .maybeSingle();
 
-  if (!record) {
-    return null;
+  if (error) {
+    handleError("Failed to update sales call by provider id", error);
   }
 
-  Object.assign(record, patch, { updatedAt: new Date().toISOString() });
-  return record;
+  return data ? mapSalesCall(data) : null;
 }

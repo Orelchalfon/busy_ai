@@ -1,11 +1,12 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { CalendarClock, PhoneCall, Sparkles, UserRoundCheck } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { calls, dashboardStats, leads, slots } from "@/lib/mock-data";
+import { getDashboardData } from "@/server/db/data";
 
 const leadStatusStyles: Record<string, string> = {
   חדש: "border-chart-3/25 bg-chart-3/10 text-chart-3",
@@ -14,7 +15,10 @@ const leadStatusStyles: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
+  await connection();
+
   const t = await getTranslations("dashboard");
+  const { calls, dashboardStats, leads, slots } = await getDashboardData();
 
   return (
     <div className="space-y-5">

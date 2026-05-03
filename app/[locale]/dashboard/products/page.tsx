@@ -1,12 +1,16 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { products } from "@/lib/mock-data";
+import { getProducts } from "@/server/db/data";
 
 export default async function ProductsPage() {
+  await connection();
+
   const t = await getTranslations("productsPage");
+  const products = await getProducts();
 
   return (
     <div className="space-y-5">
