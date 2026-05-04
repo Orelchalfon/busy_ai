@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LeadPilot AI",
-  description: "Hebrew-first CRM and AI sales dashboard for Israeli businesses.",
+  title: "BusyAI",
+  description:
+    "Hebrew-first CRM and AI sales dashboard for Israeli businesses.",
 };
 
 const themeBootScript = `
@@ -27,12 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="he"
-      className="h-full antialiased"
-      data-scroll-behavior="smooth"
-      suppressHydrationWarning
-    >
-      <body className="min-h-full">
+      lang='he'
+      className='h-full antialiased'
+      data-scroll-behavior='smooth'
+      suppressHydrationWarning>
+      <body className='min-h-full'>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
