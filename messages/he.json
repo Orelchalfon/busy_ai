@@ -108,11 +108,16 @@
       "messagesEmpty": "הודעות ותמלול יופיעו כאן אחרי תחילת השיחה.",
       "agentMessage": "סוכן",
       "userMessage": "משתמש",
+      "browser": {
+        "title": "שיחת בדיקה בדפדפן"
+      },
       "outbound": {
         "title": "שיחת טלפון outbound",
         "description": "זה הכפתור שמוציא שיחת טלפון אמיתית לליד ממספר ElevenLabs שמוגדר אצלך.",
+        "primaryBadge": "שיחת טלפון אמיתית",
         "leadName": "שם ליד",
         "toNumber": "טלפון יעד",
+        "phoneHelp": "יש להזין מספר בינלאומי בפורמט E.164, למשל +972501234567.",
         "interest": "הקשר לשיחה",
         "callerNumber": "יוצא ממספר",
         "start": "Call lead - התקשר עכשיו",

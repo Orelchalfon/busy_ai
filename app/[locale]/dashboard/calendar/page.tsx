@@ -1,13 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { connection } from "next/server";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCalendarSlots } from "@/server/db/data";
 
 export default async function CalendarPage() {
-  await connection();
-
   const t = await getTranslations("calendarPage");
   const slots = await getCalendarSlots();
 

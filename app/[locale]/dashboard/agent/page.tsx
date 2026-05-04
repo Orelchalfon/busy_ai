@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { connection } from "next/server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -20,8 +19,6 @@ const statusLabels: Record<string, string> = {
 };
 
 export default async function AgentPage() {
-  await connection();
-
   const t = await getTranslations("agentPage");
   const calls = await listSalesCalls();
   const config = getElevenLabsConfigStatus();

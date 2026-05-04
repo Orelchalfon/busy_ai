@@ -1,13 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { connection } from "next/server";
 import { DataTableCard, StatusBadge } from "@/components/dashboard/data-table-card";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { getLeads } from "@/server/db/data";
 
 export default async function LeadsPage() {
-  await connection();
-
   const t = await getTranslations("leadsPage");
   const leads = await getLeads();
 

@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { connection } from "next/server";
 import { CalendarClock, PhoneCall, Sparkles, UserRoundCheck } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
@@ -15,8 +14,6 @@ const leadStatusStyles: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  await connection();
-
   const t = await getTranslations("dashboard");
   const { calls, dashboardStats, leads, slots } = await getDashboardData();
 

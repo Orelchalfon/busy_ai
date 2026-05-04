@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "seo": {
+      "source": "affaan-m/everything-claude-code",
+      "sourceType": "github",
+      "skillPath": "skills/seo/SKILL.md",
+      "computedHash": "68dddc754062d85a25a29ccd063854907a7faa9fffea57efa0d8c24497e5dad2"
+    },
     "ui-ux-pro-max": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",

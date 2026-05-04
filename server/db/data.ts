@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { DEFAULT_BUSINESS_ID, getSupabaseServerClient } from "./client";
 import type { Database } from "./types";
 
@@ -9,6 +11,10 @@ type CalendarSlotRow = Database["public"]["Tables"]["calendar_slots"]["Row"];
 type SalesCallRow = Database["public"]["Tables"]["sales_calls"]["Row"];
 type BusinessRow = Database["public"]["Tables"]["businesses"]["Row"];
 type BusinessSettingsRow = Database["public"]["Tables"]["business_settings"]["Row"];
+type ServerSupabaseClient = SupabaseClient<Database>;
+
+const DASHBOARD_CACHE_SECONDS = 60;
+const SETTINGS_CACHE_SECONDS = 300;
 
 export type LeadStatus =
   | "חדש"
@@ -184,8 +190,10 @@ function handleError(context: string, error: { message: string }) {
   throw new Error(`${context}: ${error.message}`);
 }
 
-export async function getLeads(businessId = DEFAULT_BUSINESS_ID) {
-  const supabase = getSupabaseServerClient();
+async function queryLeads(
+  businessId = DEFAULT_BUSINESS_ID,
+  supabase: ServerSupabaseClient = getSupabaseServerClient()
+) {
   const { data, error } = await supabase
     .from("leads")
     .select("*")
@@ -199,8 +207,10 @@ export async function getLeads(businessId = DEFAULT_BUSINESS_ID) {
   return (data ?? []).map(mapLead);
 }
 
-export async function getProducts(businessId = DEFAULT_BUSINESS_ID) {
-  const supabase = getSupabaseServerClient();
+async function queryProducts(
+  businessId = DEFAULT_BUSINESS_ID,
+  supabase: ServerSupabaseClient = getSupabaseServerClient()
+) {
   const { data, error } = await supabase
     .from("products")
     .select("*")
@@ -214,8 +224,10 @@ export async function getProducts(businessId = DEFAULT_BUSINESS_ID) {
   return (data ?? []).map(mapProduct);
 }
 
-export async function getCalendarSlots(businessId = DEFAULT_BUSINESS_ID) {
-  const supabase = getSupabaseServerClient();
+async function queryCalendarSlots(
+  businessId = DEFAULT_BUSINESS_ID,
+  supabase: ServerSupabaseClient = getSupabaseServerClient()
+) {
   const { data, error } = await supabase
     .from("calendar_slots")
     .select("*")
@@ -229,8 +241,10 @@ export async function getCalendarSlots(businessId = DEFAULT_BUSINESS_ID) {
   return (data ?? []).map(mapCalendarSlot);
 }
 
-export async function getCallRecords(businessId = DEFAULT_BUSINESS_ID) {
-  const supabase = getSupabaseServerClient();
+async function queryCallRecords(
+  businessId = DEFAULT_BUSINESS_ID,
+  supabase: ServerSupabaseClient = getSupabaseServerClient()
+) {
   const { data, error } = await supabase
     .from("sales_calls")
     .select("*")
@@ -244,11 +258,12 @@ export async function getCallRecords(businessId = DEFAULT_BUSINESS_ID) {
   return (data ?? []).map(mapCall);
 }
 
-export async function getDashboardData(businessId = DEFAULT_BUSINESS_ID) {
+async function queryDashboardData(businessId = DEFAULT_BUSINESS_ID) {
+  const supabase = getSupabaseServerClient();
   const [leads, calls, slots] = await Promise.all([
-    getLeads(businessId),
-    getCallRecords(businessId),
-    getCalendarSlots(businessId)
+    queryLeads(businessId, supabase),
+    queryCallRecords(businessId, supabase),
+    queryCalendarSlots(businessId, supabase)
   ]);
 
   const closedLeads = leads.filter((lead) => lead.status === "נסגר").length;
@@ -270,7 +285,7 @@ export async function getDashboardData(businessId = DEFAULT_BUSINESS_ID) {
   };
 }
 
-export async function getBusinessSettings(
+async function queryBusinessSettings(
   businessId = DEFAULT_BUSINESS_ID
 ): Promise<BusinessSettings> {
   const supabase = getSupabaseServerClient();
@@ -312,3 +327,60 @@ export async function getBusinessSettings(
     automationItems: settings?.automation_items ?? []
   };
 }
+
+export const getLeads: (businessId?: string) => Promise<Lead[]> = unstable_cache(
+  queryLeads,
+  ["leads"],
+  {
+    tags: ["leads"],
+    revalidate: DASHBOARD_CACHE_SECONDS
+  }
+);
+
+export const getProducts: (businessId?: string) => Promise<Product[]> = unstable_cache(
+  queryProducts,
+  ["products"],
+  {
+    tags: ["products"],
+    revalidate: DASHBOARD_CACHE_SECONDS
+  }
+);
+
+export const getCalendarSlots: (businessId?: string) => Promise<CalendarSlot[]> = unstable_cache(
+  queryCalendarSlots,
+  ["calendar-slots"],
+  {
+    tags: ["calendar-slots"],
+    revalidate: DASHBOARD_CACHE_SECONDS
+  }
+);
+
+export const getCallRecords: (businessId?: string) => Promise<CallRecord[]> = unstable_cache(
+  queryCallRecords,
+  ["sales-calls"],
+  {
+    tags: ["sales-calls"],
+    revalidate: DASHBOARD_CACHE_SECONDS
+  }
+);
+
+export const getDashboardData: (businessId?: string) => Promise<{
+  dashboardStats: DashboardStat[];
+  leads: Lead[];
+  calls: CallRecord[];
+  slots: CalendarSlot[];
+}> = unstable_cache(queryDashboardData, ["dashboard-data"], {
+  tags: ["dashboard-data", "leads", "sales-calls", "calendar-slots"],
+  revalidate: DASHBOARD_CACHE_SECONDS
+});
+
+export const getBusinessSettings: (
+  businessId?: string
+) => Promise<BusinessSettings> = unstable_cache(
+  queryBusinessSettings,
+  ["business-settings"],
+  {
+    tags: ["business-settings"],
+    revalidate: SETTINGS_CACHE_SECONDS
+  }
+);

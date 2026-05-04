@@ -108,11 +108,16 @@
       "messagesEmpty": "Messages and transcript snippets will appear here after the conversation starts.",
       "agentMessage": "Agent",
       "userMessage": "User",
+      "browser": {
+        "title": "Browser test conversation"
+      },
       "outbound": {
         "title": "Outbound phone call",
         "description": "This is the button that places a real phone call to a lead from your ElevenLabs number.",
+        "primaryBadge": "Real phone call",
         "leadName": "Lead name",
         "toNumber": "Recipient phone",
+        "phoneHelp": "Use international E.164 format, for example +972501234567.",
         "interest": "Call context",
         "callerNumber": "Calling from",
         "start": "Call lead now",

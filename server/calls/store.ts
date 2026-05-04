@@ -1,5 +1,6 @@
 import "server-only";
 
+import { revalidateTag, unstable_cache } from "next/cache";
 import { DEFAULT_BUSINESS_ID, getSupabaseServerClient } from "@/server/db/client";
 import type { Database } from "@/server/db/types";
 
@@ -27,6 +28,7 @@ export type SalesCallRecord = {
 
 type SalesCallRow = Database["public"]["Tables"]["sales_calls"]["Row"];
 type SalesCallUpdate = Database["public"]["Tables"]["sales_calls"]["Update"];
+const SALES_CALLS_CACHE_TAG = "sales-calls";
 
 function mapSalesCall(row: SalesCallRow): SalesCallRecord {
   return {
@@ -63,7 +65,7 @@ function handleError(context: string, error: { message: string }) {
   throw new Error(`${context}: ${error.message}`);
 }
 
-export async function listSalesCalls(businessId = DEFAULT_BUSINESS_ID) {
+async function querySalesCalls(businessId = DEFAULT_BUSINESS_ID) {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
     .from("sales_calls")
@@ -77,6 +79,17 @@ export async function listSalesCalls(businessId = DEFAULT_BUSINESS_ID) {
 
   return (data ?? []).map(mapSalesCall);
 }
+
+export const listSalesCalls: (
+  businessId?: string
+) => Promise<SalesCallRecord[]> = unstable_cache(
+  querySalesCalls,
+  ["agent-sales-calls"],
+  {
+    tags: [SALES_CALLS_CACHE_TAG],
+    revalidate: 60
+  }
+);
 
 export async function createQueuedSalesCall(input: {
   leadName: string;
@@ -104,6 +117,8 @@ export async function createQueuedSalesCall(input: {
     throw new Error("Failed to create queued sales call: no call row returned.");
   }
 
+  revalidateTag(SALES_CALLS_CACHE_TAG, { expire: 0 });
+
   return mapSalesCall(data);
 }
 
@@ -123,6 +138,8 @@ export async function updateSalesCall(
     handleError("Failed to update sales call", error);
   }
 
+  revalidateTag(SALES_CALLS_CACHE_TAG, { expire: 0 });
+
   return data ? mapSalesCall(data) : null;
 }
 
@@ -141,6 +158,8 @@ export async function updateSalesCallByProviderId(
   if (error) {
     handleError("Failed to update sales call by provider id", error);
   }
+
+  revalidateTag(SALES_CALLS_CACHE_TAG, { expire: 0 });
 
   return data ? mapSalesCall(data) : null;
 }
