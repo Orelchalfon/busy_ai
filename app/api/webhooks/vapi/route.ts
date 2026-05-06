@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { apiSuccess } from "@/server/api/response";
 import {
   updateSalesCall,
   updateSalesCallByProviderId
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   const message = payload.message;
 
   if (!message) {
-    return NextResponse.json({ ok: true, ignored: true });
+    return apiSuccess({ ignored: true });
   }
 
   const localCallId = getLocalCallId(payload);
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       await updateSalesCallByProviderId(providerCallId, { status });
     }
 
-    return NextResponse.json({ ok: true });
+    return apiSuccess({ ignored: false });
   }
 
   if (message.type === "end-of-call-report") {
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
       await updateSalesCallByProviderId(providerCallId, patch);
     }
 
-    return NextResponse.json({ ok: true });
+    return apiSuccess({ ignored: false });
   }
 
-  return NextResponse.json({ ok: true, ignored: true });
+  return apiSuccess({ ignored: true });
 }

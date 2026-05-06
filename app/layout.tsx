@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { getAbsoluteUrl, siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -82,9 +83,15 @@ export default function RootLayout({
       data-scroll-behavior='smooth'
       suppressHydrationWarning>
       <body className='min-h-full'>
-        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
-        <script
+        <Script
+          id="theme-boot"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeBootScript }}
+        />
+        <Script
+          id="organization-json-ld"
           type="application/ld+json"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <ThemeProvider>{children}</ThemeProvider>

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\orelc\\\\programming\\\\Projects\\\\AI\\\\busy-ai\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(node *)"
+    ]
+  }
+}

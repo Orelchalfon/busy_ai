@@ -1,7 +1,6 @@
 import "server-only";
 
 import type { StartSalesCallInput, StartSalesCallResult } from "./types";
-import { buildHebrewSalesPrompt } from "./playbook";
 import { normalizePhoneNumber } from "./phone";
 
 const VAPI_CALL_URL = "https://api.vapi.ai/call";
@@ -50,13 +49,10 @@ export async function startVapiSalesCall(
       },
       assistantOverrides: {
         firstMessage: `שלום ${input.leadName}, מדברת נציגת המכירות של LeadPilot AI. זה זמן נוח לדבר רגע?`,
-        model: {
-          messages: [
-            {
-              role: "system",
-              content: buildHebrewSalesPrompt(input)
-            }
-          ]
+        variableValues: {
+          leadName: input.leadName,
+          phone: input.phone,
+          interest: input.interest
         },
         server: {
           url: `${process.env.APP_BASE_URL}/api/webhooks/vapi`
