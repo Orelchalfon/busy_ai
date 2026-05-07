@@ -133,6 +133,7 @@ export type Database = {
         Row: {
           id: string;
           business_id: string;
+          agent_id: string | null;
           provider_call_id: string | null;
           lead_id: string | null;
           lead_name: string;
@@ -149,6 +150,7 @@ export type Database = {
         Insert: {
           id?: string;
           business_id: string;
+          agent_id?: string | null;
           provider_call_id?: string | null;
           lead_id?: string | null;
           lead_name: string;
@@ -163,6 +165,46 @@ export type Database = {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["sales_calls"]["Insert"]>;
+        Relationships: [];
+      };
+      agents: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          persona: string;
+          services_text: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          persona?: string;
+          services_text?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["agents"]["Insert"]>;
+        Relationships: [];
+      };
+      business_users: {
+        Row: {
+          user_id: string;
+          business_id: string;
+          role: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          business_id: string;
+          role?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["business_users"]["Insert"]>;
         Relationships: [];
       };
     };
