@@ -1,0 +1,191 @@
+{
+  "name": "BusyAI Hebrew Outbound Sales Workflow",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "conversation",
+      "name": "פתיחת שיחה",
+      "isStart": true,
+      "prompt": "אתה נציג מכירות של {{businessName}}. פנה ל-{{leadName}} בשמו הפרטי, ושאל אם זה זמן נוח לדבר דקה-שתיים. המתן לתשובתו.",
+      "voice": {
+        "provider": "eleven_labs",
+        "voiceId": "pNInz6obpgDQGcFmaJgB",
+        "language": "he-IL"
+      },
+      "transcriber": {
+        "provider": "deepgram",
+        "model": "nova-2",
+        "language": "he"
+      }
+    },
+    {
+      "id": "check_availability",
+      "type": "conversation",
+      "name": "בדיקת זמינות",
+      "prompt": "אם הלקוח אמר שזה לא זמן נוח — הצע לחזור אליו ב-24 שעות ועבור ל-reschedule. אם זה זמן נוח — ספר לו בקצרה (משפט אחד) שיש לך פתרון שעוזר לעסקים כמו שלו לחסוך שעות בכל שבוע, ועבור לגילוי הצרכים.",
+      "conditions": [
+        {
+          "type": "ai",
+          "instruction": "האם הלקוח הסכים לשמוע? אמור 'available' אם כן, 'busy' אם לא."
+        }
+      ]
+    },
+    {
+      "id": "discovery",
+      "type": "conversation",
+      "name": "גילוי צרכים",
+      "prompt": "שאל: 'כמה זמן אתה או הצוות שלך שורפים בשבוע על מענה לפניות, שליחת לינקים, או מעקב אחרי לידים שלא ענו?' — המתן לתשובה. אחרי שהלקוח מדבר, שאל: 'ומה קורה ללידים שלא מגיבים תוך כמה שעות — אתה מאבד אותם?' המתן."
+    },
+    {
+      "id": "qualification",
+      "type": "conversation",
+      "name": "כשירות",
+      "prompt": "שאל: 'כדי שאוכל לראות אם אנחנו יכולים לעזור — מה בערך מספר הפניות שאתה מקבל בחודש, ומה התקציב שחשבת להשקיע בפתרון שמייצר לידים אוטומטית?' — המתן לתשובה.",
+      "tool": {
+        "type": "function",
+        "function": {
+          "name": "qualify_lead",
+          "description": "שמור את פרטי הכשירות של הליד",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "monthly_leads": { "type": "string" },
+              "budget_range": { "type": "string" },
+              "pain_level": { "type": "string", "enum": ["low", "medium", "high"] }
+            }
+          }
+        },
+        "server": {
+          "url": "{{appBaseUrl}}/api/webhooks/vapi/qualify"
+        }
+      }
+    },
+    {
+      "id": "pitch",
+      "type": "conversation",
+      "name": "הצגת הפתרון",
+      "prompt": "הצג את הפתרון בהתאם לפרופיל. אם budget_range נמוך — הצג Starter (חיסכון שעתיים ביום, 2 משפכי המרה). אם בינוני — הצג Growth (סינון לידים אוטומטי, סנכרון CRM, Calendly). אם גבוה — הצג Elite (AI שעונה חופשי, משפכים ללא הגבלה). אל תמציא מחירים — אמור שנשלח הצעה בכתב ב-WhatsApp.",
+      "variableValues": {
+        "businessName": "{{businessName}}",
+        "tier": "{{qualifiedTier}}"
+      }
+    },
+    {
+      "id": "objection_handling",
+      "type": "conversation",
+      "name": "טיפול בהתנגדויות",
+      "prompt": "אם הלקוח מעלה התנגדות — השתמש בטיעונים הבאים: (1) 'יקר לי' → 'מתוך ה-350 שקלים, למעלה מ-150 הם עלויות תוכנה שאנחנו סופגים במקומך.' (2) 'אני אעשה לבד ב-ManyChat' → 'לבנות משפך סינון נכון דורש עשרות שעות — אנחנו מביאים תוצאה מהיום הראשון.' (3) 'אין לי מספיק עוקבים' → 'בדיוק בגלל זה — כל ליד שמגיע כרגע שווה זהב, לא תרשה לעצמך לאבד אחד.' אחרי כל תשובה שאל אם יש עוד שאלות."
+    },
+    {
+      "id": "next_step",
+      "type": "conversation",
+      "name": "סגירת שלב הבא",
+      "prompt": "סכם את השיחה ב-2 משפטים, הדגש את הערך שהוצגת, ואמר: 'אני אשלח לך עכשיו ב-WhatsApp סיכום קצר עם הפרטים. מתי הכי נוח לך שנחזור אליך עם הצעה מפורטת?' — המתן לתאריך/שעה ועבור ל-schedule.",
+      "tool": {
+        "type": "function",
+        "function": {
+          "name": "schedule_followup",
+          "description": "שמור את מועד המעקב",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "preferred_time": { "type": "string" },
+              "lead_name": { "type": "string" },
+              "phone": { "type": "string" }
+            },
+            "required": ["preferred_time", "lead_name", "phone"]
+          }
+        },
+        "server": {
+          "url": "{{appBaseUrl}}/api/webhooks/vapi/schedule"
+        }
+      }
+    },
+    {
+      "id": "reschedule",
+      "type": "conversation",
+      "name": "תיאום מחדש",
+      "prompt": "אמור: 'אין בעיה בכלל, מתי יהיה לך זמן טוב יותר?' — שמור את הזמן ועבור לסיום."
+    },
+    {
+      "id": "end",
+      "type": "hangup",
+      "name": "סיום שיחה",
+      "message": "תודה רבה {{leadName}}, יום נהדר!"
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "check_availability"
+    },
+    {
+      "from": "check_availability",
+      "to": "discovery",
+      "condition": { "type": "ai", "value": "available" }
+    },
+    {
+      "from": "check_availability",
+      "to": "reschedule",
+      "condition": { "type": "ai", "value": "busy" }
+    },
+    {
+      "from": "discovery",
+      "to": "qualification"
+    },
+    {
+      "from": "qualification",
+      "to": "pitch"
+    },
+    {
+      "from": "pitch",
+      "to": "objection_handling",
+      "condition": {
+        "type": "ai",
+        "value": "has_objection"
+      }
+    },
+    {
+      "from": "pitch",
+      "to": "next_step",
+      "condition": {
+        "type": "ai",
+        "value": "interested"
+      }
+    },
+    {
+      "from": "objection_handling",
+      "to": "next_step",
+      "condition": {
+        "type": "ai",
+        "value": "objection_resolved"
+      }
+    },
+    {
+      "from": "objection_handling",
+      "to": "end",
+      "condition": {
+        "type": "ai",
+        "value": "not_interested"
+      }
+    },
+    {
+      "from": "next_step",
+      "to": "end"
+    },
+    {
+      "from": "reschedule",
+      "to": "end"
+    }
+  ],
+  "globalConfig": {
+    "maxDurationSeconds": 480,
+    "silenceTimeoutSeconds": 20,
+    "backgroundDenoisingEnabled": true,
+    "modelOutputInMessagesEnabled": true
+  },
+  "variableValues": {
+    "businessName": "BusyAI",
+    "appBaseUrl": "https://your-app-url.com"
+  }
+}
