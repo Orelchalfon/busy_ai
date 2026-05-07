@@ -61,6 +61,19 @@ on conflict (id) do update set
   status = excluded.status,
   owner = excluded.owner;
 
+insert into public.agents (id, business_id, name, persona, services_text)
+values (
+  'a0000000-0000-4000-8000-000000000001',
+  '00000000-0000-4000-8000-000000000001',
+  'סוכן ברירת מחדל',
+  'סוכן מכירות מנומס שמדבר עברית טבעית ומתאם פגישות התקנה ומדידה.',
+  'ארונות הזזה, מזנונים, שולחנות אוכל. שיחות מתאמות פגישות מדידה והתקנה.'
+)
+on conflict (id) do update set
+  name = excluded.name,
+  persona = excluded.persona,
+  services_text = excluded.services_text;
+
 insert into public.sales_calls (id, business_id, lead_id, lead_name, phone, interest, status, summary, created_at)
 values
   ('40000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', 'נועה כהן', '050-123-4567', 'מעוניינת בארון הזזה כולל התקנה', 'ended', 'הלקוחה ביקשה לקבל דוגמאות ולהמשיך לשיחת מעקב מחר.', now() - interval '2 hours'),
