@@ -3,7 +3,9 @@
     "allow": [
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\orelc\\\\programming\\\\Projects\\\\AI\\\\busy-ai\" -Force)",
       "Bash(Select-Object Name, PSIsContainer)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\orelc\\\\programming\\\\Projects\\\\AI\\\\busy-ai\\\\app\\\\[locale]\\\\dashboard\" -Directory)",
+      "Bash(Select-Object -ExpandProperty Name)"
     ]
   }
 }
