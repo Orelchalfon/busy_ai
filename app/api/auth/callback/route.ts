@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ensureBusinessForUser } from "@/server/auth/provision";
+import { listAgents } from "@/server/agents/store";
 import { routing } from "@/i18n/routing";
 
 export async function GET(request: NextRequest) {
@@ -36,8 +37,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  let businessId: string;
   try {
-    await ensureBusinessForUser(user);
+    businessId = await ensureBusinessForUser(user);
   } catch (error) {
     const message = error instanceof Error ? error.message : "provisioning_failed";
     return NextResponse.redirect(
@@ -48,7 +50,13 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const agents = await listAgents(businessId);
+  const fallback =
+    agents.length === 0
+      ? `/${routing.defaultLocale}/dashboard/agents/new`
+      : `/${routing.defaultLocale}/dashboard/agents`;
+
   const safeNext =
-    requestedNext && requestedNext.startsWith("/") ? requestedNext : `/${routing.defaultLocale}/dashboard`;
+    requestedNext && requestedNext.startsWith("/") ? requestedNext : fallback;
   return NextResponse.redirect(new URL(safeNext, url.origin));
 }

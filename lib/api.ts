@@ -2,6 +2,7 @@ export type ApiErrorCode =
   | "VALIDATION_ERROR"
   | "CONFIGURATION_ERROR"
   | "PROVIDER_ERROR"
+  | "UNAUTHORIZED"
   | "UNKNOWN_ERROR";
 
 export type ApiError = {
