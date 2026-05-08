@@ -1,4 +1,65 @@
 {
+  "agents": {
+    "listTitle": "Your agents",
+    "listDescription": "Every AI agent you've created. Each agent has its own persona, services list, and (soon) connector setup.",
+    "newAgentCta": "New agent",
+    "vapiStatusTitle": "Vapi connection",
+    "vapiStatusDescription": "Status of the env vars required to place AI calls.",
+    "vapiConfigured": "Vapi connected",
+    "vapiMissing": "ENV missing",
+    "emptyTitle": "No agents yet",
+    "emptyDescription": "Create your first agent and configure its persona, services, and channel connectors.",
+    "active": "Active",
+    "inactive": "Paused",
+    "noPersona": "No persona configured.",
+    "noServices": "No services configured.",
+    "new": {
+      "title": "Create a new agent",
+      "description": "Define the agent: name, voice persona, and services it can offer. Channel connectors come next.",
+      "formTitle": "Agent details",
+      "formDescription": "All fields are stored under your business only. You can edit them at any time.",
+      "nameLabel": "Agent name",
+      "nameHelp": "Internal name for identifying the agent. Customers won't see it directly.",
+      "personaLabel": "Agent persona",
+      "personaPlaceholder": "Example: A polite, focused agent that books consultations for an aesthetics clinic. Asks medical screening questions gently, proposes available slots, and escalates discount requests to the business owner.",
+      "personaHelp": "Free-form description, 20+ characters. Goes directly into the agent's system prompt.",
+      "servicesLabel": "Services this agent offers",
+      "servicesPlaceholder": "Example: Initial consultation (₪350), laser treatment, lip fillers. Include prices, duration, and conditions where useful.",
+      "servicesHelp": "Injected into the prompt so the agent can answer service and pricing questions.",
+      "submit": "Create agent",
+      "submitting": "Saving...",
+      "errorTitle": "Failed to create agent",
+      "genericError": "Something went wrong while creating the agent. Please try again."
+    },
+    "detail": {
+      "active": "Active",
+      "inactive": "Paused",
+      "servicesTitle": "Services this agent offers",
+      "servicesDescription": "This text is injected into the agent's system prompt on every call.",
+      "emptyServices": "No services configured yet."
+    },
+    "connections": {
+      "title": "Connections",
+      "description": "Channels supported soon. Today the agent runs on the Vapi voice channel only.",
+      "comingSoon": "Coming soon",
+      "connectors": {
+        "whatsapp": "WhatsApp Business",
+        "meta": "Facebook / Instagram",
+        "gmail": "Gmail",
+        "googleCalendar": "Google Calendar / Docs"
+      }
+    }
+  },
+  "login": {
+    "title": "Sign in to BusyAI",
+    "description": "We'll email you a one-time sign-in link. Click it to land in the dashboard.",
+    "emailLabel": "Email address",
+    "submit": "Send me a sign-in link",
+    "submitting": "Sending...",
+    "sent": "Link sent",
+    "sentMessage": "Check your inbox. The link is valid for a limited time.",
+    "genericError": "Something went wrong while sending the link. Please try again."
+  },
   "brand": {
     "title": "Smart Sales Dashboard",
     "subtitle": "Hebrew-first CRM with a voice sales agent foundation"

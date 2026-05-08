@@ -11,7 +11,7 @@ type SidebarProps = {
 
 const items = [
   { href: "/dashboard", icon: LayoutDashboard, labels: { he: "סקירה", en: "Overview" } },
-  { href: "/dashboard/agent", icon: Bot, labels: { he: "סוכן AI", en: "AI Agent" } },
+  { href: "/dashboard/agents", icon: Bot, labels: { he: "סוכנים", en: "Agents" } },
   { href: "/dashboard/leads", icon: BarChart3, labels: { he: "לידים", en: "Leads" } },
   { href: "/dashboard/calls", icon: PhoneCall, labels: { he: "שיחות", en: "Calls" } },
   { href: "/dashboard/calendar", icon: CalendarDays, labels: { he: "יומן", en: "Calendar" } },
