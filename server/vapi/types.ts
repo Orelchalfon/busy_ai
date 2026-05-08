@@ -2,6 +2,7 @@ export type StartSalesCallInput = {
   leadName: string;
   phone: string;
   interest: string;
+  agentId?: string;
 };
 
 export type StartSalesCallResult = {
@@ -11,13 +12,31 @@ export type StartSalesCallResult = {
 
 export type VapiStatus = "scheduled" | "queued" | "ringing" | "in-progress" | "ended";
 
+export type VapiToolCall = {
+  id: string;
+  type?: string;
+  function?: {
+    name?: string;
+    arguments?: unknown;
+  };
+};
+
+export type VapiCallMetadata = {
+  localCallId?: string;
+  businessId?: string;
+  agentId?: string;
+  leadName?: string;
+  phone?: string;
+  interest?: string;
+};
+
 export type VapiWebhookMessage =
   | {
       type: "status-update";
       status?: VapiStatus;
       call?: {
         id?: string;
-        metadata?: Record<string, unknown>;
+        metadata?: VapiCallMetadata;
       };
     }
   | {
@@ -25,7 +44,7 @@ export type VapiWebhookMessage =
       endedReason?: string;
       call?: {
         id?: string;
-        metadata?: Record<string, unknown>;
+        metadata?: VapiCallMetadata;
       };
       artifact?: {
         transcript?: string;
@@ -41,6 +60,15 @@ export type VapiWebhookMessage =
         }>;
       };
       summary?: string;
+    }
+  | {
+      type: "tool-calls";
+      toolCallList?: VapiToolCall[];
+      toolCalls?: VapiToolCall[];
+      call?: {
+        id?: string;
+        metadata?: VapiCallMetadata;
+      };
     };
 
 export type VapiWebhookPayload = {

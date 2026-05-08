@@ -31,7 +31,7 @@ type CallResponse = {
   };
 };
 
-export function VapiSalesAgentPanel() {
+export function VapiSalesAgentPanel({ agentId }: { agentId?: string } = {}) {
   const t = useTranslations("agentPage.live");
   const router = useRouter();
   const [leadName, setLeadName] = useState("Or test lead");
@@ -61,7 +61,7 @@ export function VapiSalesAgentPanel() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ leadName, phone: toNumber, interest }),
+        body: JSON.stringify({ leadName, phone: toNumber, interest, agentId }),
       });
 
       console.info("[vapi:outbound-ui] Outbound call response", { payload });

@@ -1,7 +1,12 @@
 import "server-only";
 
-import type { StartSalesCallInput, StartSalesCallResult } from "./types";
+import type {
+  StartSalesCallInput,
+  StartSalesCallResult,
+  VapiCallMetadata
+} from "./types";
 import { normalizePhoneNumber } from "./phone";
+import { VAPI_TOOLS } from "./tools";
 
 const VAPI_CALL_URL = "https://api.vapi.ai/call";
 
@@ -29,10 +34,36 @@ export function assertVapiConfig() {
   }
 }
 
+export type StartVapiSalesCallExtras = {
+  localCallId: string;
+  businessId: string;
+  agentId?: string;
+  agentName: string;
+  businessName: string;
+  systemPrompt: string;
+  firstMessage: string;
+};
+
 export async function startVapiSalesCall(
-  input: StartSalesCallInput & { localCallId: string }
+  input: StartSalesCallInput & StartVapiSalesCallExtras
 ): Promise<StartSalesCallResult> {
   assertVapiConfig();
+
+  const metadata: VapiCallMetadata = {
+    localCallId: input.localCallId,
+    businessId: input.businessId,
+    agentId: input.agentId,
+    leadName: input.leadName,
+    phone: input.phone,
+    interest: input.interest
+  };
+
+  const serverConfig: { url: string; secret?: string } = {
+    url: `${process.env.APP_BASE_URL}/api/webhooks/vapi`
+  };
+  if (process.env.VAPI_WEBHOOK_SECRET) {
+    serverConfig.secret = process.env.VAPI_WEBHOOK_SECRET;
+  }
 
   const response = await fetch(VAPI_CALL_URL, {
     method: "POST",
@@ -48,22 +79,22 @@ export async function startVapiSalesCall(
         number: normalizePhoneNumber(input.phone)
       },
       assistantOverrides: {
-        firstMessage: `שלום ${input.leadName}, מדברת נציגת המכירות של LeadPilot AI. זה זמן נוח לדבר רגע?`,
+        firstMessage: input.firstMessage,
+        model: {
+          messages: [{ role: "system", content: input.systemPrompt }],
+          tools: VAPI_TOOLS
+        },
         variableValues: {
           leadName: input.leadName,
           phone: input.phone,
-          interest: input.interest
+          interest: input.interest,
+          businessName: input.businessName,
+          agentName: input.agentName
         },
-        server: {
-          url: `${process.env.APP_BASE_URL}/api/webhooks/vapi`
-        },
-        serverMessages: ["status-update", "end-of-call-report"]
+        server: serverConfig,
+        serverMessages: ["status-update", "end-of-call-report", "tool-calls"]
       },
-      metadata: {
-        localCallId: input.localCallId,
-        leadName: input.leadName,
-        interest: input.interest
-      }
+      metadata
     })
   });
 

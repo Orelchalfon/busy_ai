@@ -13,6 +13,8 @@ export type SalesCallStatus =
 
 export type SalesCallRecord = {
   id: string;
+  businessId: string;
+  agentId?: string;
   providerCallId?: string;
   leadName: string;
   phone: string;
@@ -33,6 +35,8 @@ const SALES_CALLS_CACHE_TAG = "sales-calls";
 function mapSalesCall(row: SalesCallRow): SalesCallRecord {
   return {
     id: row.id,
+    businessId: row.business_id,
+    agentId: row.agent_id ?? undefined,
     providerCallId: row.provider_call_id ?? undefined,
     leadName: row.lead_name,
     phone: row.phone,
@@ -92,6 +96,8 @@ export const listSalesCalls: (
 );
 
 export async function createQueuedSalesCall(input: {
+  businessId: string;
+  agentId?: string;
   leadName: string;
   phone: string;
   interest: string;
@@ -100,7 +106,8 @@ export async function createQueuedSalesCall(input: {
   const { data, error } = await supabase
     .from("sales_calls")
     .insert({
-      business_id: DEFAULT_BUSINESS_ID,
+      business_id: input.businessId,
+      agent_id: input.agentId ?? null,
       lead_name: input.leadName,
       phone: input.phone,
       interest: input.interest,
